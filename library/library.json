@@ -1,0 +1,112 @@
+{
+    "calculationSheets": {
+        "building": {
+            "title": "建筑物",
+            "files": {}
+        },
+        "structure": {
+            "title": "构筑物",
+            "files": {}
+        },
+        "foundation": {
+            "title": "基础及基坑",
+            "files": {}
+        },
+        "pipe": {
+            "title": "管道",
+            "files": {}
+        },
+        "others": {
+            "title": "其他",
+            "files": {}
+        }
+    },
+    "drawings": {
+        "building": {
+            "title": "建筑物",
+            "files": {}
+        },
+        "structure": {
+            "title": "构筑物",
+            "files": {}
+        },
+        "foundation": {
+            "title": "基础及基坑",
+            "files": {}
+        },
+        "pipe": {
+            "title": "管道",
+            "files": {}
+        },
+        "others": {
+            "title": "其他",
+            "files": {}
+        }
+    },
+    "documents": {
+        "building": {
+            "title": "建筑物",
+            "files": {}
+        },
+        "structure": {
+            "title": "构筑物",
+            "files": {}
+        },
+        "foundation": {
+            "title": "基础及基坑",
+            "files": {}
+        },
+        "pipe": {
+            "title": "管道",
+            "files": {}
+        },
+        "others": {
+            "title": "其他",
+            "files": {}
+        }
+    },
+    "coursewares": {
+        "building": {
+            "title": "建筑物",
+            "files": {}
+        },
+        "structure": {
+            "title": "构筑物",
+            "files": {}
+        },
+        "foundation": {
+            "title": "基础及基坑",
+            "files": {}
+        },
+        "pipe": {
+            "title": "管道",
+            "files": {}
+        },
+        "others": {
+            "title": "其他",
+            "files": {}
+        }
+    },
+    "calculationPrograms": {
+        "building": {
+            "title": "建筑物",
+            "files": {}
+        },
+        "structure": {
+            "title": "构筑物",
+            "files": {}
+        },
+        "foundation": {
+            "title": "基础及基坑",
+            "files": {}
+        },
+        "pipe": {
+            "title": "管道",
+            "files": {}
+        },
+        "others": {
+            "title": "其他",
+            "files": {}
+        }
+    }
+}

@@ -1,0 +1,58 @@
+{
+    "applicationName": "Design Helper",
+    "applicationTitle": "设计助手",
+    "version": "1.0.0",
+    "author": "Wu Nan",
+    "description": "A helper application for design tasks.",
+    "settings": {
+        "theme": "light",
+        "language": "en",
+        "autosave": true
+    },
+    "CollapsibleSidebar": {
+        "navigationItems": {
+            "calculationSheets": {
+                "index": 0,
+                "title": "标准计算书",
+                "icon": "difference",
+                "path": "/design-helper"
+            },
+            "drawings": {
+                "index": 1,
+                "title": "参考图纸",
+                "icon": "photo_library",
+                "path": "/design-tools"
+            },
+            "documents": {
+                "index": 2,
+                "title": "参考文本",
+                "icon": "description",
+                "path": "/design-resources"
+            },
+            "coursewares": {
+                "index": 3,
+                "title": "业务学习",
+                "icon": "newspaper",
+                "path": "/design-resources"
+            },
+            "calculationPrograms": {
+                "index": 4,
+                "title": "计算程序",
+                "icon": "data_object",
+                "path": "/design-resources"
+            },
+            "addItems": {
+                "index": 5,
+                "title": "添加...",
+                "icon": "queue",
+                "path": "/design-resources"
+            },
+            "settings": {
+                "index": 6,
+                "title": "设置",
+                "icon": "settings",
+                "path": "/design-resources"
+            }
+        }
+    }
+}
