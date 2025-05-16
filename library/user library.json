@@ -1,0 +1,127 @@
+{
+    "calculationSheets": {
+        "title": "标准计算书",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "drawings": {
+        "title": "参考图纸",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "documents": {
+        "title": "参考文本",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "coursewares": {
+        "title": "业务学习",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "calculationPrograms": {
+        "title": "计算程序",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    }
+}

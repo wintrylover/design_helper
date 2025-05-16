@@ -1,31 +1,113 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-
+import 'package:crypto/crypto.dart';
+import 'package:path/path.dart' as path;
 
 // add页面
 class AddPage extends StatefulWidget {
-  const AddPage({super.key});  
+  final Map<String, dynamic>? defaultLibraryJson;
+  final Map<String, dynamic>? userLibraryJson;
+  final Map<String, dynamic>? filesJson;
+  final void Function(Map<String, dynamic>, Map<String, dynamic>, bool) onLibraryJsonChanged;
+
+  const AddPage({
+    super.key,
+    required this.defaultLibraryJson,
+    required this.userLibraryJson,
+    required this.filesJson,
+    required this.onLibraryJsonChanged,
+  });
 
   @override
-  AddPageState createState() => AddPageState();
+  State<AddPage> createState() => _AddPageState();
 }
 
-class AddPageState extends State<AddPage> with AutomaticKeepAliveClientMixin {
+class _AddPageState extends State<AddPage> {
   final _formKey = GlobalKey<FormState>();
+  late Map<String, dynamic>? _defaultLibraryJson;
+  late Map<String, dynamic>? _userLibraryJson;
+  late Map<String, dynamic>? _filesJson;
   String _filePath = '';
-  String _mainCategory = '';
-  String _subCategory = '';
+  String _mainCategorySelectedKey = '';
+  String _subCategorySelectedKey = '';
   String _publisher = '';
   DateTime _publishDate = DateTime.now();
   String _description = '';
 
-  final List<String> _mainCategories = ['分类一', '分类二', '分类三']; // 示例数据
-  final List<String> _subCategories = ['子类A', '子类B', '子类C']; // 示例数据
+  // 初始化
+  @override
+  void initState() {
+    super.initState();
+    _defaultLibraryJson = widget.defaultLibraryJson;
+    _userLibraryJson = widget.userLibraryJson;
+    _filesJson = widget.filesJson;
+    _mainCategorySelectedKey = _defaultLibraryJson?.keys.first ?? '';
+    _subCategorySelectedKey = _defaultLibraryJson?[_mainCategorySelectedKey]['files'].keys.first ?? '';
+  }
+
+  // 提交表单
+  Future<void> _submitForm(String libraryPath, bool user) async {
+    await _submitAddFile(libraryPath, user);
+    // if (_filePath.isNotEmpty) {
+    //   if (_formKey.currentState!.validate()) {
+    //     await _submitAddFile(libraryPath, user);
+    //     _formKey.currentState!.save();
+    //   }
+    // }
+  }
+
+  // 添加文件
+  Future<void> _submitAddFile(String libraryPath, bool user) async {
+    if (_filePath.isEmpty) {
+      return;
+    }
+    // 读取文件并计算md5
+    File file = File(_filePath);
+    var fileBytes = await file.readAsBytes();
+    String md5Hash = md5.convert(fileBytes).toString();
+    // 创建文件夹并复制文件
+    String targetDirPath = path.join(libraryPath, md5Hash);
+    Directory targetDir = Directory(targetDirPath);
+    if (!await targetDir.exists()) {
+      await targetDir.create(recursive: true);
+      String fileName = path.basename(_filePath);
+      String targetFilePath = path.join(targetDirPath, fileName);
+      await file.copy(targetFilePath);
+
+      // 创建info.json
+      Map<String, dynamic> fileInfo = {
+        'originalName': fileName,
+        'md5': md5Hash,
+        'mainCategory': _mainCategorySelectedKey,
+        'subCategory': _subCategorySelectedKey,
+        'publisher': _publisher,
+        'publishDate': _publishDate.toIso8601String(),
+        'description': _description,
+      };
+      String jsonFilePath = path.join(targetDirPath, 'info.json');
+      File jsonFile = File(jsonFilePath);
+      await jsonFile.writeAsString(json.encode(fileInfo));
+      //更新filesJson
+      _filesJson![md5Hash] = fileInfo;
+      // 更新library.json
+      if (!user) {
+        _defaultLibraryJson![_mainCategorySelectedKey]['files'][_subCategorySelectedKey]['subfiles'][md5Hash] =
+            fileName;
+        widget.onLibraryJsonChanged(_defaultLibraryJson!, _filesJson!, user);
+      } else {
+        _userLibraryJson![_mainCategorySelectedKey]['files'][_subCategorySelectedKey]['subfiles'][md5Hash] = fileName;
+        widget.onLibraryJsonChanged(_userLibraryJson!, _filesJson!, user);
+      }
+    }
+    // TODO: 若重复添加文件夹，则不进行后续操作
+    else {}
+  }
 
   // 选择文件
   Future<void> _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       setState(() {
         _filePath = result.files.first.path ?? '';
@@ -33,136 +115,124 @@ class AddPageState extends State<AddPage> with AutomaticKeepAliveClientMixin {
     }
   }
 
+  // 选择日期
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _publishDate,
-      firstDate: DateTime(2025),  
-      lastDate: DateTime(2099)    
+      firstDate: DateTime.now().subtract(Duration(days: 30)),
+      lastDate: DateTime.now(),
     );
-    if (picked != null && picked != _publishDate)
+    if (picked != null && picked != _publishDate) {
       setState(() {
         _publishDate = picked;
       });
-  }
-
-  // 提交表单
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // 在这里处理表单提交逻辑，例如打印数据或发送到服务器
-      print('文件路径: $_filePath');
-      print('主类别: $_mainCategory');
-      print('子类别: $_subCategory');
-      print('发布人: $_publisher');
-      print('发布日期: $_publishDate');
-      print('说明: $_description');
-      // 可以在这里添加上传文件的逻辑
     }
   }
 
   @override
-  bool get wantKeepAlive => true; // 保持页面状态
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context); // 调用super的方法.
+    Map<String, dynamic> subCategory = _defaultLibraryJson?[_mainCategorySelectedKey]['files'] ?? {};
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Form(
-        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              // 文件选择
+            children: [
+              // 文件夹选择
               Row(
                 children: [
+                  ElevatedButton(onPressed: null, child: Text('选择文件夹...')),
+                  SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
                       readOnly: true,
-                      decoration: InputDecoration(labelText: '文件', border: OutlineInputBorder()),
-                      controller: TextEditingController(text: _filePath), // 显示文件路径
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请选择文件';
-                        }
-                        return null;
-                      },
+                      decoration: InputDecoration(labelText: '已选择文件夹', border: OutlineInputBorder()),
+                      controller: TextEditingController(text: _filePath),
                     ),
                   ),
-                  SizedBox(width: 10),
-                  ElevatedButton(onPressed: _pickFile, child: Text('选择文件')),
                 ],
               ),
               SizedBox(height: 20),
 
-              // 主类别
-              DropdownButtonFormField<String>(
-                value: _mainCategory = '分类一',
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _mainCategory = newValue!;
-                  });
-                },
-                items: _mainCategories.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                decoration: InputDecoration(labelText: '主类别', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '请选择主类别';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _mainCategory = value ?? '',
-              ),
-              SizedBox(height: 20),
-
-              // 子类别
-              DropdownButtonFormField<String>(
-                value: _subCategory = '子类A',
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _subCategory = newValue!;
-                  });
-                },
-                items: _subCategories.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-                decoration: InputDecoration(labelText: '子类别', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '请选择子类别';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _subCategory = value ?? '',
-              ),
-              SizedBox(height: 20),
-
-              // 发布人
-              TextFormField(
-                decoration: InputDecoration(labelText: '发布人', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '请输入发布人';
-                  }
-                  return null;
-                },
-                onSaved: (value) => _publisher = value ?? '',
-              ),
-              SizedBox(height: 20),
-
-              // 发布日期
+              // 文件选择
               Row(
                 children: [
+                  ElevatedButton(onPressed: _pickFile, child: Text('选择文件...')),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      readOnly: true,
+                      decoration: InputDecoration(labelText: '已选择文件', border: OutlineInputBorder()),
+                      controller: TextEditingController(text: _filePath),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // 文件分类选择
+              Row(
+                children: [
+                  Expanded(
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(labelText: '分类', border: OutlineInputBorder()),
+                      value: _mainCategorySelectedKey,
+                      items:
+                          _defaultLibraryJson?.entries.map((entry) {
+                            return DropdownMenuItem(value: entry.key, child: Text(entry.value['title']));
+                          }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _mainCategorySelectedKey = value ?? '';
+                          _subCategorySelectedKey =
+                              _defaultLibraryJson?[_mainCategorySelectedKey]['files'].keys.first ?? '';
+                        });
+                      },
+                      onSaved: (value) => _mainCategorySelectedKey = value ?? '',
+                    ),
+                  ),
+                  SizedBox(width: 20),
+
+                  Expanded(
+                    child: DropdownButtonFormField(
+                      decoration: InputDecoration(labelText: '子分类', border: OutlineInputBorder()),
+                      value: _subCategorySelectedKey,
+                      items:
+                          subCategory.entries.map((entry) {
+                            return DropdownMenuItem(value: entry.key, child: Text(entry.value['title']));
+                          }).toList(),
+                      onChanged: (String? newKey) {
+                        setState(() {
+                          _subCategorySelectedKey = newKey ?? '';
+                        });
+                      },
+                      onSaved: (value) => _subCategorySelectedKey = value ?? '',
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // 发布人及时间
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      decoration: InputDecoration(labelText: '发布人', border: OutlineInputBorder()),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '请输入发布人';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => _publisher = value ?? '',
+                    ),
+                  ),
+                  SizedBox(width: 20),
+
                   Expanded(
                     child: TextFormField(
                       readOnly: true,
@@ -171,22 +241,9 @@ class AddPageState extends State<AddPage> with AutomaticKeepAliveClientMixin {
                         border: OutlineInputBorder(),
                         suffixIcon: Icon(Icons.calendar_today),
                       ),
-                      controller: TextEditingController(
-                        text: "${_publishDate.toLocal()}".split(' ')[0],
-                      ), // 显示日期
-                      onTap: () => _selectDate(context), // 点击弹出日期选择器
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请选择发布日期';
-                        }
-                        return null;
-                      },
+                      controller: TextEditingController(text: "${_publishDate.toLocal()}".split(' ')[0]),
+                      onTap: () => _selectDate(context),
                     ),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () => _selectDate(context),
-                    child: Text('选择日期'),
                   ),
                 ],
               ),
@@ -194,20 +251,35 @@ class AddPageState extends State<AddPage> with AutomaticKeepAliveClientMixin {
 
               // 说明
               TextFormField(
-                maxLines: 3,
+                maxLines: 5,
                 decoration: InputDecoration(labelText: '说明', border: OutlineInputBorder()),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '请输入说明';
-                  }
-                  return null;
-                },
                 onSaved: (value) => _description = value ?? '',
               ),
               SizedBox(height: 20),
 
-              // 添加按钮
-              ElevatedButton(onPressed: _submitForm, child: Text('添加')),
+              // 提交
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitForm('library/user', true);
+                    },
+                    child: Text('添加'),
+                  ),
+                  SizedBox(width: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      _submitForm('library/default', false);
+                    },
+                    child: Text('添加并发布'),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+
+              // 结束
+              Divider(height: 1, thickness: 1, color: Colors.grey[300]),
             ],
           ),
         ),

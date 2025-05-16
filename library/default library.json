@@ -1,0 +1,133 @@
+{
+    "calculationSheets": {
+        "title": "标准计算书",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {
+                    "43b2bdbcffc4366956ff965392797494": "池壁计算书V202403.xls",
+                    "28a3732dcec750851587875bf281a2d9": "地下构筑物侧向压力计算书V202403.xls",
+                    "4098892ac7133bc37817d8c811cd2a27": "双向板计算书V202403.xls"
+                }
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {
+                    "22296c9ec0ec243ff86fa68bca821718": "单根钢筋植筋锚固深度计算表V202403.xlsx"
+                }
+            }
+        }
+    },
+    "drawings": {
+        "title": "参考图纸",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "documents": {
+        "title": "参考文本",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "coursewares": {
+        "title": "业务学习",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    },
+    "calculationPrograms": {
+        "title": "计算程序",
+        "files": {
+            "building": {
+                "title": "建筑物",
+                "subfiles": {}
+            },
+            "structure": {
+                "title": "构筑物",
+                "subfiles": {}
+            },
+            "foundation": {
+                "title": "基础及基坑",
+                "subfiles": {}
+            },
+            "pipe": {
+                "title": "管道",
+                "subfiles": {}
+            },
+            "others": {
+                "title": "其他",
+                "subfiles": {}
+            }
+        }
+    }
+}
